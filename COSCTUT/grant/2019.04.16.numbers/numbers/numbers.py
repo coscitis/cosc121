@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 """
 numbers.py, a collection of random Python questions to test your code skills.
@@ -80,7 +80,8 @@ maths_is_gross(numbers, filename) that, for each three-integer list:
 - finds the largest two numbers and adds them together, then
 - divides that by the smallest number, then
 - if the division does not cause an error due to dividing by zero, outputs the
-  result *to a file* in its own line, to 2 decimal places.
+  result TO THE FILE (given by the filename parameter) in its own line, to 2
+  decimal places.
 - if the division does cause an error, output the word "error" to the file, in
   its own line.
 
@@ -121,49 +122,64 @@ def check():
     # pytest: https://docs.pytest.org/en/latest/
 
     passed = True
-    tests = {
-        parse_file: [
-            [ 'input.txt', [[1,4,7],[3,0,1,0],[8,0,6],[1,1,2]] ],
-            [ 'input2.txt', [[1,1,1],[0,0],[1],[2,2,2],[1,0,1],[0,1,0],[100,100,100,100],[0,100,0]] ],
-            [ 'input3.txt', [[1,307,72,3,0,74],[37,79],[3],[0],[34,777,30,1],[10],[74,10,0,4],[1,1,1,1,1],[2,2,2,2,1,1,1,1,0,2],[0,0,0,0,0,0,1],[0,0,0],[999,9,9,9,999]] ],
-            [ 'input4.txt', [[0]] ],
-            [ 'input5.txt', [[1],[2],[3],[4],[5],[6],[7],[8]] ],
-            [ 'input6.txt', [] ],
-        ],
-        number_of_nonlonely: [
-            [ [[1,4,7],[3,0,1,0],[8,0,6],[1,1,2]], [2,-3,-3,1] ],
-            [ [[100,50,192,382,472,18,27,47,19,10,28],[29,10,1,48,5,1,29],[1]], [11,5,0] ],
-            [ [[1,1,1,1,1],[0,0,0],[1,0,1],[0,0]], [0,-3,-1,-2] ],
-            [ [[0],[0,0],[0,0,0],[0,0,0,0],[0,0,0,0,0]], [-1,-2,-3,-4,-5] ],
-            [ [[1,2,3]], [2] ],
-            [ [], [] ],
-        ],
-    }
-    for func in tests:
-        for (i, test) in enumerate(tests[func]):
-            print(f'--> Testing test {i + 1} in function {func.__name__}...', end='')
-            output = func(test[0])
-            if output == test[1]:
-                print(' (passed)')
-            else:
-                passed = False
-                print(f'\nError: Test "{test[0]}" failed in function {func.__name__}')
-                print(f'Expected "{test[1]}", got "{output}".')
-            print()
+    tests_parse = [
+        [ 'input.txt', [[1,4,7],[3,0,1,0],[8,0,6],[1,1,2]] ],
+        [ 'input2.txt', [[1,1,1],[0,0],[1],[2,2,2],[1,0,1],[0,1,0],[100,100,100,100],[0,100,0]] ],
+        [ 'input3.txt', [[1,307,72,3,0,74],[37,79],[3],[0],[34,777,30,1],[10],[74,10,0,4],[1,1,1,1,1],[2,2,2,2,1,1,1,1,0,2],[0,0,0,0,0,0,1],[0,0,0],[999,9,9,9,999]] ],
+        [ 'input4.txt', [[0]] ],
+        [ 'input5.txt', [[1],[2],[3],[4],[5],[6],[7],[8]] ],
+        [ 'input6.txt', [] ],
+    ]
+
+    for (i, test) in enumerate(tests_parse):
+        print(f'--> Testing test {i + 1} in function parse_file...', end='')
+        f = (Path(__file__).parent / test[0]).resolve()
+        output = parse_file(f)
+        if output == test[1]:
+            print(' (passed)')
+        else:
+            passed = False
+            print(f'\nError: Test "{test[0]}" failed in function parse_file')
+            print(f'Expected "{test[1]}", got "{output}".')
         print()
+    print()
+
+    tests_nonlonely = [
+        [ [[1,4,7],[3,0,1,0],[8,0,6],[1,1,2]], [2,-3,-3,1] ],
+        [ [[100,50,192,382,472,18,27,47,19,10,28],[29,10,1,48,5,1,29],[1]], [11,5,0] ],
+        [ [[1,1,1,1,1],[0,0,0],[1,0,1],[0,0]], [0,-3,-1,-2] ],
+        [ [[0],[0,0],[0,0,0],[0,0,0,0],[0,0,0,0,0]], [-1,-2,-3,-4,-5] ],
+        [ [[1,2,3]], [2] ],
+        [ [], [] ],
+    ]
+
+    for (i, test) in enumerate(tests_nonlonely):
+        print(f'--> Testing test {i + 1} in function number_of_nonlonely...', end='')
+        output = number_of_nonlonely(test[0])
+        if output == test[1]:
+            print(' (passed)')
+        else:
+            passed = False
+            print(f'\nError: Test "{test[0]}" failed in function number_of_nonlonely')
+            print(f'Expected "{test[1]}", got "{output}".')
+        print()
+    print()
 
     tests_maths = [
-        ([[5,10,15],[-12,15,2],[-5,0,10],[0,2,4]], 'tmp/numbers_out.txt', 'numbers.txt'),
-        ([[0,0,0],[1,1,1],[2,2,2],[3,3,3],[-5,-20,-49],[-1,-1,-1],[-2,-3,-4],[0,-1019,-1029],[1,0,-1],[-20000,-20000,0],[-1,1,-1]], 'tmp/numbers2_out.txt', 'numbers2.txt'),
-        ([], 'tmp/numbers3_out.txt', 'numbers3.txt'),
-        ([[1,2,3]], 'tmp/numbers4_out.txt', 'numbers4.txt'),
-        ([[1928758,192837273829,3],[9784,2861,392],[192,28,9]], 'tmp/numbers5_out.txt', 'numbers5.txt'),
+        ([[5,10,15],[-12,15,2],[-5,0,10],[0,2,4]], 'numbers_out.txt', 'numbers.txt'),
+        ([[0,0,0],[1,1,1],[2,2,2],[3,3,3],[-5,-20,-49],[-1,-1,-1],[-2,-3,-4],[0,-1019,-1029],[1,0,-1],[-20000,-20000,0],[-1,1,-1]], 'numbers2_out.txt', 'numbers2.txt'),
+        ([], 'numbers3_out.txt', 'numbers3.txt'),
+        ([[1,2,3]], 'numbers4_out.txt', 'numbers4.txt'),
+        ([[1928758,192837273829,3],[9784,2861,392],[192,28,9]], 'numbers5_out.txt', 'numbers5.txt'),
     ]
     for (i, test) in enumerate(tests_maths):
-        maths_is_gross(test[0], test[1])
+        output_file = (Path(__file__).parent / 'tmp' / test[1]).resolve()
+        check_file = (Path(__file__).parent / test[2]).resolve()
+        print(output_file)
+        maths_is_gross(test[0], output_file)
         try:
-            print(f'--> Testing test {i + 1} in function {func.__name__}...', end='')
-            with open(test[1]) as result, open(test[2]) as expected:
+            print(f'--> Testing test {i + 1} in function maths_is_gross...', end='')
+            with open(output_file) as result, open(check_file) as expected:
                 result_contents = result.read()
                 expected_contents = expected.read()
                 if result_contents == expected_contents:
@@ -176,10 +192,13 @@ def check():
                     print(result_contents)
                     passed = False
             # delete output file afterwards
-            os.remove(test[1])
+            # print('Deleting', output_file)
+            output_file.unlink()
             print()
-        except FileNotFoundError:
-            print(f'\nError: could not find file {test[1]}.')
+        except FileNotFoundError as e:
+            print(f'\nError: {e}')
+            print(f'Could not find the file above. Are you sure you wrote the output to the right file?')
+            passed = False
             print()
     print('======')
     if passed:
